@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.1)
+project(nfd VERSION 0.1 LANGUAGES C CXX)
+
+set(NFD_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+
+set(NFD_SOURCES "${NFD_SOURCE_DIR}/src/nfd_common.c")
+if(WIN32)
+  list(APPEND NFD_SOURCES "${NFD_SOURCE_DIR}/src/nfd_win.cpp")
+elseif(UNIX)
+  if(APPLE)
+    list(APPEND NFD_SOURCES "${NFD_SOURCE_DIR}/src/nfd_cocoa.m")
+  else()
+    list(APPEND NFD_SOURCES "${NFD_SOURCE_DIR}/src/nfd_zenity.c")
+  endif()
+endif()
+add_library(nfd "${NFD_SOURCES}")
+target_include_directories(nfd PRIVATE "${NFD_SOURCE_DIR}/src")
+target_include_directories(nfd PUBLIC "${NFD_SOURCE_DIR}/src/include")
+
+add_library(nfd::nfd ALIAS nfd)
